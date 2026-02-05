@@ -1,3 +1,4 @@
+
 name: SonarCloud Frontend Analysis
 
 on:
@@ -31,6 +32,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.projectKey=prawin0614_feedback_frontend
-            -Dsonar.organization=prawin0614
+            -Dsonar.projectKey=srinivash21_bitdding-frontend
+            -Dsonar.organization=srinivash21
             -Dsonar.sources=src
