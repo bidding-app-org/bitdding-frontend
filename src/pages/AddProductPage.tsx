@@ -27,7 +27,7 @@ export default function AddProductPage() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!sellerName.trim()) return setToast({ msg: 'Seller name is required', kind: 'error' })
+    if (!sellerName.trim()) return setToast({ msg: 'Seller Name is required', kind: 'error' })
     if (!name.trim()) return setToast({ msg: 'Product name is required', kind: 'error' })
     if (!description.trim()) return setToast({ msg: 'Description is required', kind: 'error' })
     if (!startingPrice || Number(startingPrice) <= 0) return setToast({ msg: 'Starting price must be > 0', kind: 'error' })

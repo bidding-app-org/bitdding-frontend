@@ -1,11 +1,24 @@
-export function parseLocalDateTime(localDateTime: string): Date {
+export function parseLocalDateTime(value: string): Date {
   // Spring LocalDateTime typically serializes as 'YYYY-MM-DDTHH:mm:ss'
   // Parse as *local* time, not UTC.
-  const [datePart, timePartRaw = '00:00:00'] = localDateTime.split('T')
+  //
+  // However, some backends may send ISO timestamps with timezone info
+  // (e.g. '...Z' or '...+05:30'). In that case, prefer the built-in
+  // ISO parsing to avoid NaN dates.
+
+  const hasTimezone = /[zZ]$/.test(value) || /[+-]\d{2}:\d{2}$/.test(value) || /[+-]\d{4}$/.test(value)
+  if (hasTimezone) {
+    const parsed = new Date(value)
+    if (Number.isFinite(parsed.getTime())) return parsed
+  }
+
+  const [datePart, timePartRaw = '00:00:00'] = value.split('T')
   const [y, m, d] = datePart.split('-').map(Number)
   const timePart = timePartRaw.split('.')[0]
   const [hh = 0, mm = 0, ss = 0] = timePart.split(':').map(Number)
-  return new Date(y, (m ?? 1) - 1, d ?? 1, hh, mm, ss)
+
+  const date = new Date(y, (m ?? 1) - 1, d ?? 1, hh, mm, ss)
+  return date
 }
 
 export function formatMoney(value: string | number): string {
@@ -26,6 +39,7 @@ export function toIsoLocalDateTime(datetimeLocalValue: string): string {
 }
 
 export function formatCountdown(msRemaining: number): string {
+  if (!Number.isFinite(msRemaining)) return '—'
   if (msRemaining <= 0) return 'Ended'
   const totalSeconds = Math.floor(msRemaining / 1000)
   const days = Math.floor(totalSeconds / 86400)
